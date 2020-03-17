@@ -772,7 +772,7 @@ void verificarAnalises(FILE *arquivo) {
 
 					} // fim else
 
-					// Verifica se o valor inicializa o nome de uma possivel variacel
+					// Verifica se o valor inicializa o nome de uma possivel variavel 35 => #
 					if (ascii == 35) {
 						palavraAuxiliar[count] = (char) ascii;
 						count++;
