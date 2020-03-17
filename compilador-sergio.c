@@ -18,11 +18,11 @@ void verificarAnalises();
 void verificarLiterais(char *palavra, int nuLinha);
 int verificarCondicaoParada(int ascii);
 int verificarCaracteresEspeciaisValidos(int ascii);
-int isVerificaFinalizacaoPontoVingula(char *palavra, int nuLinha);
-int isVerificaDeclaracaoVariavel(char *palavra, int nuLinha);
-int isMainValido(char *palavra, int nuLinha);
-int isReservada(char *palavra);
-int isTipoVariavel(char *palavra);
+int verificarPontoVingula(char *palavra, int nuLinha);
+int verificarDeclaracaoVariavel(char *palavra, int nuLinha);
+int verificarMainValido(char *palavra, int nuLinha);
+int verificarPalavrasReservadas(char *palavra);
+int verificarTipoVariavel(char *palavra);
 
 // Consumo de Memoria
 void mostrarConsumoMemoria();
@@ -37,7 +37,6 @@ typedef struct simbolo {
 } Simbolo;
 
 typedef struct elemSimbolo {
-    struct elemSimbolo *ant;
     Simbolo dados;
     struct elemSimbolo *prox;
 } ElemSimbolo;
@@ -126,7 +125,7 @@ void removePalavrasComAspas(char *palavra, char *palavraComAspas) {
 	strcpy(palavraComAspas, palavraComConteudoAspas);
 }
 
-int isVerificaDeclaracaoVariavel(char *palavra, int nuLinha) {
+int verificarDeclaracaoVariavel(char *palavra, int nuLinha) {
     int i, ascii, primeiroAscii;
 
 	ascii = (int) palavra[0];
@@ -160,7 +159,7 @@ int isVerificaDeclaracaoVariavel(char *palavra, int nuLinha) {
 	return 1;
 }
 
-int isMainValido(char *palavra, int nuLinha) {
+int verificarMainValido(char *palavra, int nuLinha) {
 	int i, ascii, count = 0, isInValido = 0;
 	char palavraTmp[300];
 	char palavraProcessada[300];
@@ -231,7 +230,7 @@ void removerCaracterEspaco(char *palavra) {
 	salvarMemoriaConsumida(sizeof(palavraTmp), 1);
 }
 
-int isVerificaFinalizacaoPontoVingula(char *palavra, int nuLinha) {
+int verificarPontoVingula(char *palavra, int nuLinha) {
 	char palavraProcessada[300];
 	limparLixoString(palavraProcessada);
 
@@ -266,7 +265,7 @@ int isVerificaFinalizacaoPontoVingula(char *palavra, int nuLinha) {
 	return 0;
 }
 
-int isTipoVariavel(char *palavra) {
+int verificarTipoVariavel(char *palavra) {
 	if (strcmp(palavra, "string") == 0) {
 		return 1;
 	}
@@ -282,7 +281,7 @@ int isTipoVariavel(char *palavra) {
 	return 0;
 }
 
-int verificaPalavraReservada(char *palavra) {
+int verificarPalavrasReservadas(char *palavra) {
 	char reservadas[9][8] = {
 		"main",
 		"puts",
@@ -569,7 +568,6 @@ int insereFinalTabelaSimbolo(TabelaSimbolo* lista, Simbolo simbolo) {
 
     // lista vazia: insere inicio
     if ((*lista) == NULL) {
-        no->ant = NULL;
         *lista = no;
     } else {
         ElemSimbolo *aux;
@@ -580,7 +578,6 @@ int insereFinalTabelaSimbolo(TabelaSimbolo* lista, Simbolo simbolo) {
         }
 
         aux->prox = no;
-        no->ant = aux;
     }
     return 1;
 }
@@ -716,18 +713,18 @@ void verificarAnalises(FILE *arquivo) {
 						count++;
 					} else {
 
-						isVariavelValida = isVerificaDeclaracaoVariavel(palavraAuxiliar, nuLinha);
+						isVariavelValida = verificarDeclaracaoVariavel(palavraAuxiliar, nuLinha);
 						if (isVariavelValida) {
 							countVariaveis ++;
 							strcpy(nomeVariavel, palavraAuxiliar);
 						}
 
-						isReservadaValida = verificaPalavraReservada(palavraAuxiliar);
+						isReservadaValida = verificarPalavrasReservadas(palavraAuxiliar);
 						if (isReservadaValida) {
-							if (isTipoVariavel(palavraAuxiliar) == 1) {
+							if (verificarTipoVariavel(palavraAuxiliar) == 1) {
 								isPossuiDeclaracaoVariavel = 1;
 
-								if (! isVerificaFinalizacaoPontoVingula(conteudoPorCaracter, nuLinha)) {
+								if (! verificarPontoVingula(conteudoPorCaracter, nuLinha)) {
 									mostrarErrorValidacao(nuLinha, 6, conteudoLinha);
 								}
 
@@ -736,12 +733,10 @@ void verificarAnalises(FILE *arquivo) {
 
 							if (strcmp(palavraAuxiliar, "main") == 0) {
 								isMainExistente ++;
-								isMainValido(conteudoPorCaracter, nuLinha);
+								verificarMainValido(conteudoPorCaracter, nuLinha);
 							}
 						}
 
-						// TODO ...
-						// printf("Debug => (%s) - (%d) - (%i) - (%c) - (%s)\n", conteudoPorCaracter, nuLinha, ascii, (char) ascii, palavraAuxiliar);
 						if (strlen(palavraAuxiliar) > 0) {
 							if (!isVariavelValida && !isReservadaValida) {
 								mostrarErrorValidacao(nuLinha, 1, palavraAuxiliar);
