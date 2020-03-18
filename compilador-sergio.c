@@ -519,7 +519,7 @@ void verificarLiterais(char *palavra, int nuLinha) {
 		// numeros (0-9) && alfabeto a-z, A-Z
 		// printf("Debug => (%s) - (%i) - (%i) - (%c) - (%i) - (%i) - (%i)\n", palavra, nuLinha, ascii, (char) ascii, (ascii >= 48 && ascii <= 57), ((ascii >= 65 && ascii <= 90) && (ascii >= 97 && ascii <= 122)), verificarCaracteresEspeciaisValidos(ascii));
 		if (! (ascii >= 48 && ascii <= 57) && !((ascii >= 65 && ascii <= 90) || (ascii >= 97 && ascii <= 122)) && (verificarCaracteresEspeciaisValidos(ascii) == 0)) {
-			printf("\n(%c) NAO É LITERAIS VALIDO.\n", palavra[i]);
+			printf("\n(%c) NAO E LITERAIS VALIDO.\n", palavra[i]);
 			mostrarErrorValidacao(nuLinha, 0, palavra);
 			exit(0);
 		}
@@ -805,7 +805,7 @@ void verificarAnalises(FILE *arquivo) {
 
 int main () {
 	printf("DISCIPLINA: COMPILADOR \n");
-	printf("ACADEMICO: SÉRGIO HENRIQUE MENDES ESTEVES\n");
+	printf("ACADEMICO: SERGIO HENRIQUE MENDES ESTEVES\n");
 	printf("====================================================================\n");
 
 	FILE *arquivo;
